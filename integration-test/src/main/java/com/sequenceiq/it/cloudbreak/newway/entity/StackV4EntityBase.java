@@ -48,14 +48,14 @@ public abstract class StackV4EntityBase<T extends StackV4EntityBase<T>> extends 
 
     public StackV4EntityBase<T> valid() {
         String name = getNameCreator().getRandomNameForResource();
-        return withName(name)
+        withName(name)
                 .withPlacement(getTestContext().given(PlacementSettingsEntity.class))
                 .withInstanceGroupsEntity(InstanceGroupEntity.defaultHostGroup(getTestContext()))
                 .withNetwork(getTestContext().given(NetworkV2Entity.class))
                 .withStackAuthentication(getCloudProvider().stackAuthentication(given(StackAuthenticationEntity.class)))
                 .withGatewayPort(getCloudProvider().gatewayPort(this))
-                .withCluster(getTestContext().given(ClusterEntity.class).withName(name))
-                .withYarnQueue(getTestParameter().get("integrationtest.yarn.queue"));
+                .withCluster(getTestContext().given(ClusterEntity.class).withName(name));
+        return getCloudProvider().stack(this);
     }
 
     public StackV4EntityBase<T> withEveryProperties() {
@@ -254,15 +254,6 @@ public abstract class StackV4EntityBase<T extends StackV4EntityBase<T>> extends 
 
     public StackV4EntityBase<T> withYarn(YarnStackV4Parameters yarn) {
         getRequest().setYarn(yarn);
-        return this;
-    }
-
-    public StackV4EntityBase<T> withYarnQueue(String yarnQueue) {
-        if (yarnQueue != null) {
-            YarnStackV4Parameters yarnStackV4Parameters = new YarnStackV4Parameters();
-            yarnStackV4Parameters.setYarnQueue(yarnQueue);
-            getRequest().setYarn(yarnStackV4Parameters);
-        }
         return this;
     }
 
